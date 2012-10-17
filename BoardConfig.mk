@@ -1,0 +1,96 @@
+USE_CAMERA_STUB := false
+BOARD_USE_FROYO_LIBCAMERA := true
+
+# inherit from the proprietary version
+-include vendor/lge/gt540/BoardConfigVendor.mk
+
+BOARD_USES_QCOM_LIBS := true
+BOARD_USES_QCOM_HARDWARE := true
+BOARD_USES_QCOM_LIBRPC := true
+
+TARGET_NO_BOOTLOADER := true
+TARGET_BOARD_PLATFORM := msm7k
+TARGET_CPU_ABI := armeabi
+TARGET_ARCH_VARIANT := armv6-vfp
+TARGET_BOARD_PLATFORM := msm7k
+TARGET_CPU_ABI := armeabi
+TARGET_BOOTLOADER_BOARD_NAME := gt540
+PRODUCT_SPECIFIC_DEFINES += TARGET_PRELINKER_MAP=device/lge/gt540/prelink-linux-arm-gt540.map
+
+TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
+
+BOARD_KERNEL_CMDLINE :=  mem=214M console=tty0,115200n8 androidboot.hardware=swift uart.mode=arm11_uart_disable crash=off
+BOARD_KERNEL_BASE := 0x00200000
+BOARD_PAGE_SIZE := 0x00000800
+
+# fix this up by examining /proc/mtd on a running device
+BOARD_BOOTIMAGE_PARTITION_SIZE := 0x00380000
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x00480000
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 0x08c60000
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 0x105c0000
+BOARD_FLASH_BLOCK_SIZE := 131072
+
+TARGET_PREBUILT_KERNEL := device/lge/gt540/kernel
+
+TARGET_LIBAGL_USE_GRALLOC_COPYBITS := true
+TARGET_OVERLAY_ALWAYS_DETERMINES_FORMAT := true
+TARGET_SF_NEEDS_REAL_DIMENSIONS := true
+BOARD_NO_RGBX_8888 := true
+BOARD_USE_NASTY_PTHREAD_CREATE_HACK := true
+
+BOARD_EGL_CFG := device/lge/gt540/configs/egl.cfg
+
+TARGET_PROVIDES_INIT_TARGET_RC := true
+
+TARGET_OTA_ASSERT_DEVICE := swift,gt540
+
+# Audio and Bluetooth
+TARGET_PROVIDES_LIBAUDIO := true
+TARGET_PROVIDES_LIBRIL := true
+BOARD_HAVE_BLUETOOTH := true
+BOARD_HAVE_BLUETOOTH_BCM := true
+
+# Enable GPS
+BOARD_USES_GPSSHIM := true
+BOARD_GPS_NEEDS_XTRA := true
+BOARD_GPS_LIBRARIES := libloc
+
+# USB
+BOARD_CUSTOM_USB_CONTROLLER := ../../device/lge/gt540/UsbController.cpp
+TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun"
+BOARD_UMS_LUNFILE := "/sys/devices/platform/usb_mass_storage/lun0/file"
+
+# Wifi
+BOARD_WPA_SUPPLICANT_DRIVER := WEXT
+WPA_SUPPLICANT_VERSION      := VER_0_5_X
+BOARD_WLAN_DEVICE           := bcm4325
+WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/wireless.ko"
+WIFI_DRIVER_FW_STA_PATH     := "/system/etc/wl/rtecdc.bin"
+WIFI_DRIVER_FW_AP_PATH      := "/system/etc/wl/rtecdc-apsta.bin"
+WIFI_DRIVER_MODULE_ARG      := "firmware_path=/system/etc/wl/rtecdc.bin nvram_path=/system/etc/wl/nvram.txt"
+WIFI_DRIVER_MODULE_NAME     := wireless
+WIFI_DRIVER_HAS_LGE_SOFTAP := true
+
+WITH_JIT := true
+ENABLE_JSC_JIT := true
+JS_ENGINE := v8
+
+# Recovery
+BOARD_RECOVERY_HANDLES_MOUNT := true
+BOARD_HAS_DOWNLOAD_MODE := true
+BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/lge/gt540/recovery/recovery_ui.c
+
+# FM Radio
+BOARD_FM_DEVICE := bcm4325
+BOARD_HAVE_FM_RADIO := true
+BOARD_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
+BOARD_USE_BROADCOM_FM_VOLUME_HACK := true
+
+# Sensors
+TARGET_USES_OLD_LIBSENSORS_HAL:=true
+TARGET_HAS_FOXCONN_SENSORS:=false
+BOARD_VENDOR_USE_AKMD := akm8973
+TARGET_SENSORS_NO_OPEN_CHECK := true
+TARGET_USES_OLD_LIBSENSORS_HAL := true
+TARGET_WANTS_OLD_ACTIVATE_BEHAVIOR := true
+
