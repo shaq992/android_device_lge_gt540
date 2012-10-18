@@ -19,36 +19,36 @@ PRODUCT_COPY_FILES += \
 
 # Board-specific init
 PRODUCT_COPY_FILES += \
-         $(LOCAL_PATH)/init.swift.rc:root/init.pecan.rc \
-         $(LOCAL_PATH)/ueventd.qct.rc:root/ueventd.pecan.rc \    
+         $(LOCAL_PATH)/init.swift.rc:root/init.swift.rc \
+         $(LOCAL_PATH)/ueventd.qct.rc:root/ueventd.qct.rc    
 
 #Configs
 PRODUCT_COPY_FILES += \
             $(LOCAL_PATH)/configs/AVRCP.kl:system/usr/keylayout/AVRCP.kl    $(LOCAL_PATH)/configs/qwerty.kl:system/usr/keylayout/qwerty.kl \
 	    $(LOCAL_PATH)/configs/swift_touchscreen.kcm.bin:system/usr/keychars/swift_touchscreen.kcm.bin \
             $(LOCAL_PATH)/configs/swift_keypad.kcm.bin:system/usr/keychars/swift_keypad.kcm.bin \
-	    $(LOCAL_PATH)/configs/swift_touchscreen.kl:system/usr/keylayout/swift_touchscreen.kl \
+	    $(LOCAL_PATH)/configs/swift_touchscreen.kl:system/usr/keylayout/swift_touchscreen.kl 
 	    
 
 # Wifi
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/wireless.ko:system/lib/modules/wireless.ko \
     $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-    $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
+    $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf 
 
 # SD Card
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab \
+    $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab 
 
 # Bluetooth
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/BCM4325D1_004.002.004.0262.0270.hcd:system/bin/BCM4325D1_004.002.004.0262.0270.hcd \
+    $(LOCAL_PATH)/configs/BCM4325D1_004.002.004.0262.0270.hcd:system/bin/BCM4325D1_004.002.004.0262.0270.hcd 
 
 # Audio
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/AudioFilter.csv:system/etc/AudioFilter.csv \
     $(LOCAL_PATH)/configs/AutoVolumeControl.txt:system/etc/AutoVolumeControl.txt \
-    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
+    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml 
 
 # Device Permissions 
 PRODUCT_COPY_FILES += \
@@ -56,7 +56,7 @@ frameworks/base/data/etc/handheld_core_hardware.xml:system/etc/permissions/handh
     frameworks/base/data/etc/android.hardware.camera.autofocus.xml:system/etc/permissions/android.hardware.camera.autofocus.xml \
     frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/base/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
-    frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
+    frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml 
 
 $(call inherit-product, build/target/product/full.mk)
 
@@ -69,9 +69,9 @@ PRODUCT_PACKAGES += \
     hwaddrs \
     libOmxCore \
     libcamera \
-    libapversion \
+    libapversion 
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := gt540
 PRODUCT_DEVICE := gt540
-PRODUCT_MODEL := LG Optimus Swift
+PRODUCT_MODEL := LG-GT540
