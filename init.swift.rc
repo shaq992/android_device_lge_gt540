@@ -71,9 +71,9 @@ on boot
     chown system system /sys/class/leds/green/blink
     chown system system /sys/bus/i2c/devices/0-0045/powerbtn
 
-    chmod 666 /sys/class/backlight/rt9393/brightness
-    chown 666 /sys/class/backlight/rt9393/max_brightness
-    chown 666 /sys/class/backlight/rt9393/actual_brightness
+    chmod 666  /sys/class/backlight/rt9393/brightness
+    chown 666  /sys/class/backlight/rt9393/max_brightness
+    chown 666  /sys/class/backlight/rt9393/actual_brightness
     
     
 
@@ -118,3 +118,4 @@ service abtfilt /system/bin/abtfilt -c -d -z -n
 service qmuxd /system/bin/qmuxd
     user root
     group root 
+
