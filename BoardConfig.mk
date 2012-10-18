@@ -15,7 +15,6 @@ TARGET_ARCH_VARIANT := armv6-vfp
 TARGET_BOARD_PLATFORM := msm7k
 TARGET_CPU_ABI := armeabi
 TARGET_BOOTLOADER_BOARD_NAME := gt540
-PRODUCT_SPECIFIC_DEFINES += TARGET_PRELINKER_MAP=device/lge/gt540/prelink-linux-arm-gt540.map
 
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
 
@@ -50,14 +49,15 @@ TARGET_PROVIDES_LIBRIL := true
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
 
-# Enable GPS (Needs Testing)
-TARGET_HAS_FOXCONN_SENSORS:=false
-BOARD_VENDOR_USE_AKMD := akm8973
-
 # USB
 BOARD_CUSTOM_USB_CONTROLLER := ../../device/lge/gt540/UsbController.cpp
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun"
 BOARD_UMS_LUNFILE := "/sys/devices/platform/usb_mass_storage/lun0/file"
+
+# GPS
+BOARD_USES_GPSSHIM := true
+BOARD_GPS_NEEDS_XTRA := true
+BOARD_GPS_LIBRARIES := libloc
 
 # Wifi
 BOARD_WPA_SUPPLICANT_DRIVER := WEXT
