@@ -21,6 +21,7 @@ lib/liboem_rapi.so
 lib/liblgdrm.so 
 lib/liblgeat.so 
 lib/liblgerft.so 
+lib/liblgdrmwbxml.so 
 lib/libbcmwl.so
 lib/libdsm.so 
 lib/libqueue.so 
