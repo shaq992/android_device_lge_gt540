@@ -8,11 +8,17 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
+LOCAL_MODULE_TAGS := optional
+
 LOCAL_SRC_FILES:= QualcommCameraHardware.cpp
 
 LOCAL_CFLAGS:= -DDLOPEN_LIBMMCAMERA=$(DLOPEN_LIBMMCAMERA)
 
 LOCAL_CFLAGS+= -DNUM_PREVIEW_BUFFERS=4 -D_ANDROID_
+
+LOCAL_CFLAGS+= -G
+
+LOCAL_CPPFLAGS+= -g
 
 LOCAL_C_INCLUDES+= \
     $(TARGET_OUT_HEADERS)/mm-camera \
@@ -28,6 +34,5 @@ LOCAL_SHARED_LIBRARIES+= libdl
 endif
 
 LOCAL_MODULE:= libcamera
-LOCAL_MODULE_TAGS := optional
 include $(BUILD_SHARED_LIBRARY)
 endif

@@ -60,19 +60,26 @@ BOARD_GPS_NEEDS_XTRA := true
 BOARD_GPS_LIBRARIES := libloc
 
 # Wifi
-BOARD_WPA_SUPPLICANT_DRIVER := WEXT
-WPA_SUPPLICANT_VERSION      := VER_0_5_X
-BOARD_WLAN_DEVICE           := bcm4325
-WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/wireless.ko"
-WIFI_DRIVER_FW_STA_PATH     := "/system/etc/wl/rtecdc.bin"
-WIFI_DRIVER_FW_AP_PATH      := "/system/etc/wl/rtecdc-apsta.bin"
-WIFI_DRIVER_MODULE_ARG      := "firmware_path=/system/etc/wl/rtecdc.bin nvram_path=/system/etc/wl/nvram.txt"
-WIFI_DRIVER_MODULE_NAME     := wireless
+# VER_0_6_X does not search networks
+WPA_SUPPLICANT_VERSION := VER_0_5_X
+BOARD_WLAN_DEVICE := bcm4325
+WIFI_DRIVER_MODULE_PATH := "/system/lib/modules/wireless.ko"
+WIFI_DRIVER_MODULE_ARG := "firmware_path=/system/etc/wl/rtecdc.bin nvram_path=/system/etc/wl/nvram.txt"
+WIFI_DRIVER_MODULE_NAME := wireless
+WIFI_DRIVER_FW_STA_PATH := "/system/etc/wl/rtecdc.bin"
+WIFI_DRIVER_FW_AP_PATH := "/system/etc/wl/rtecdc-apsta.bin"
 WIFI_DRIVER_HAS_LGE_SOFTAP := true
+BOARD_WPA_SUPPLICANT_DRIVER:=WEXT
 
 WITH_JIT := true
 ENABLE_JSC_JIT := true
 JS_ENGINE := v8
+BUILD_PV_VIDEO_ENCODERS := true
+TARGET_USES_16BPPSURFACE_FOR_OPAQUE := true
+USE_PV_WINDOWS_MEDIA := false
+BUILD_WITH_FULL_STAGEFRIGHT := true
+ENABLE_WTF_USE_ACCELERATED_COMPOSITING := true
+BOARD_AVOID_DRAW_TEXTURE_EXTENSION := true
 
 # Recovery
 BOARD_RECOVERY_HANDLES_MOUNT := true
