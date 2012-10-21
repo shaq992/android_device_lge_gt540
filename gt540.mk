@@ -19,20 +19,17 @@ PRODUCT_COPY_FILES += \
 
 # Board-specific init
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/init.swift.rc:root/init.swift.rc \
-    $(LOCAL_PATH)/ueventd.qct.rc:root/ueventd.qct.rc    
+         $(LOCAL_PATH)/init.swift.rc:root/init.swift.rc \
+         $(LOCAL_PATH)/ueventd.qct.rc:root/ueventd.qct.rc    
 
 #Configs
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/AVRCP.kl:system/usr/keylayout/AVRCP.kl \
-    $(LOCAL_PATH)/configs/qwerty.kl:system/usr/keylayout/qwerty.kl \
-    $(LOCAL_PATH)/configs/qwerty.kl:system/usr/keylayout/swift_keypad.kl \
-    $(LOCAL_PATH)/configs/msm_touchscreen.kl:system/usr/keylayout/msm_touchscreen.kl \
-    $(LOCAL_PATH)/configs/msm_touchscreen.kcm.bin:system/usr/keychars/msm_touchscreen.kcm.bin \
-    $(LOCAL_PATH)/configs/qwerty.kcm.bin:system/usr/keychars/qwerty.kcm.bin \
-    $(LOCAL_PATH)/configs/qwerty.kcm.bin:system/usr/keychars/swift_keypad.kcm.bin \
-    $(LOCAL_PATH)/configs/qwerty2.kcm.bin:system/usr/keychars/qwerty2.kcm.bin
- 
+            $(LOCAL_PATH)/configs/AVRCP.kl:system/usr/keylayout/AVRCP.kl    $(LOCAL_PATH)/configs/qwerty.kl:system/usr/keylayout/qwerty.kl \
+	    $(LOCAL_PATH)/configs/swift_touchscreen.kcm.bin:system/usr/keychars/swift_touchscreen.kcm.bin \
+            $(LOCAL_PATH)/configs/swift_keypad.kcm.bin:system/usr/keychars/swift_keypad.kcm.bin \
+	    $(LOCAL_PATH)/configs/swift_touchscreen.kl:system/usr/keylayout/swift_touchscreen.kl 
+	    
+
 # Wifi
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/wireless.ko:system/lib/modules/wireless.ko \
@@ -52,10 +49,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/AudioFilter.csv:system/etc/AudioFilter.csv \
     $(LOCAL_PATH)/configs/AutoVolumeControl.txt:system/etc/AutoVolumeControl.txt \
     $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml 
-
-# Swap
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/07swapon:system/etc/init.d/07swapon
 
 # Device Permissions 
 PRODUCT_COPY_FILES += \
