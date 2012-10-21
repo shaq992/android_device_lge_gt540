@@ -25,24 +25,19 @@ PRODUCT_COPY_FILES += \
 #Configs
 PRODUCT_COPY_FILES += \
             $(LOCAL_PATH)/configs/AVRCP.kl:system/usr/keylayout/AVRCP.kl    $(LOCAL_PATH)/configs/qwerty.kl:system/usr/keylayout/qwerty.kl \
+            $(LOCAL_PATH)/configs/qwerty.kcm.bin:system/usr/keychars/qwerty.kcm.bin \
 	    $(LOCAL_PATH)/configs/swift_touchscreen.kcm.bin:system/usr/keychars/swift_touchscreen.kcm.bin \
             $(LOCAL_PATH)/configs/swift_keypad.kcm.bin:system/usr/keychars/swift_keypad.kcm.bin \
 	    $(LOCAL_PATH)/configs/swift_touchscreen.kl:system/usr/keylayout/swift_touchscreen.kl 
 	    
-
 # Wifi
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/wireless.ko:system/lib/modules/wireless.ko \
-    $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
     $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf 
 
 # SD Card
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab 
-
-# Bluetooth
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/BCM4325D1_004.002.004.0262.0270.hcd:system/bin/BCM4325D1_004.002.004.0262.0270.hcd 
 
 # Audio
 PRODUCT_COPY_FILES += \
