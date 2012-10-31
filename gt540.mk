@@ -56,11 +56,7 @@ frameworks/base/data/etc/handheld_core_hardware.xml:system/etc/permissions/handh
 $(call inherit-product, build/target/product/full.mk)
 
 PRODUCT_PACKAGES += \
-    lights.swift \
-    copybit.swift \
-    gralloc.swift \
     gps.swift \
-    sensors.swift \
     hwaddrs \
     libOmxCore \
     libcamera \
