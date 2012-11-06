@@ -90,7 +90,6 @@ static uint32_t SND_DEVICE_SPEAKER=-1;
 static uint32_t SND_DEVICE_SPEAKER_RING=-1;
 static uint32_t SND_DEVICE_SPEAKER_IN_CALL=-1;
 static uint32_t SND_DEVICE_BT=-1;
-static uint32_t SND_DEVICE_BT_VR=-1;
 static uint32_t SND_DEVICE_BT_EC_OFF=-1;
 static uint32_t SND_DEVICE_BT_A2DP=-1;
 static uint32_t SND_DEVICE_BT_A2DP_HEADPHONES=-1;
@@ -111,7 +110,7 @@ static uint32_t SND_DEVICE_NO_MIC_HEADSET=-1;
 
 AudioHardware::AudioHardware() :
     mInit(false), mMicMute(true), mBluetoothNrec(true), mBluetoothId(0),
-    mOutput(0), mSndEndpoints(NULL), mCurSndDevice(-1), mDualMicEnabled(false)
+    mOutput(0), mSndEndpoints(NULL), mCurSndDevice(-1), mDualMicEnabled(false), mBuiltinMicSelected(false)
 #ifdef HAVE_FM_RADIO
           ,mFmRadioEnabled(false)
 #endif
@@ -139,7 +138,6 @@ AudioHardware::AudioHardware() :
 				CHECK_FOR(SPEAKER_IN_CALL);
 				CHECK_FOR(SPEAKER_RING);
                 CHECK_FOR(BT);
-                CHECK_FOR(BT_VR);
                 CHECK_FOR(BT_EC_OFF);
 				CHECK_FOR(BT_A2DP);
 				CHECK_FOR(BT_A2DP_HEADPHONES);
@@ -274,17 +272,6 @@ AudioStreamIn* AudioHardware::openInputStream(
 {
     // check for valid input source
     if (!AudioSystem::isInputDevice((AudioSystem::audio_devices)devices)) {
-        return 0;
-    }
-
-    if ( (mMode == AudioSystem::MODE_IN_CALL) &&
-         (getInputSampleRate(*sampleRate) > AUDIO_HW_IN_SAMPLERATE) &&
-         (*format == AUDIO_HW_IN_FORMAT) )
-    {
-        LOGE("PCM recording, in a voice call, with sample rate more than 8K not supported \
-                re-configure with 8K and try software re-sampler ");
-        *status = BAD_VALUE;
-        *sampleRate = AUDIO_HW_IN_SAMPLERATE;
         return 0;
     }
 
@@ -427,10 +414,8 @@ status_t AudioHardware::setParameters(const String8& keyValuePairs)
         } else {
             mTtyMode = TTY_OFF;
         }
-        if(mMode != AudioSystem::MODE_IN_CALL){
-           return NO_ERROR;
-        }
-        doRouting(NULL);
+    } else {
+        mTtyMode = TTY_OFF;
     }
 
 #ifdef HAVE_FM_RADIO
@@ -444,7 +429,9 @@ status_t AudioHardware::setParameters(const String8& keyValuePairs)
        setFmOnOff(false);
     }
 #endif
-
+    
+    doRouting(NULL);
+    
     return NO_ERROR;
 }
 
@@ -460,10 +447,6 @@ String8 AudioHardware::getParameters(const String8& keys)
         param.add(key, value);
     }
 
-    key = String8("tunneled-input-formats");
-    if ( param.get(key,value) == NO_ERROR ) {
-        param.addInt(String8("AMR"), true );
-    }
     LOGV("AudioHardware::getParameters() %s", param.toString().string());
     return param.toString();
 }
@@ -808,7 +791,7 @@ int check_and_set_audpp_parameters(char *buf, int size)
 
         agc_flag[device_id] = (uint16_t)strtol(p, &ps, 16);
         LOGV("AGC flag = %02x.", agc_flag[device_id]);
-        if (agc_flag[device_id != 0])
+        if (agc_flag[device_id] != 0)
             enable_preproc_mask |= AGC_ENABLE;
         } else if ((buf[0] == 'G')) {
         /* This is the NS record we are looking for.  Tokenize it */
@@ -1191,17 +1174,17 @@ status_t AudioHardware::setVoiceVolume(float v)
 
     int vol = 0;
     if (mCurSndDevice == SND_DEVICE_SPEAKER || mCurSndDevice == SND_DEVICE_SPEAKER_RING || mCurSndDevice == SND_DEVICE_HEADSET_STEREO) {
-      vol = lrint(v * 30 );//21
-    }  	 else if (mCurSndDevice == SND_DEVICE_HANDSET) {
-      vol = lrint(v * 10);//5.46
-		} else if (mCurSndDevice == SND_DEVICE_HEADSET) {
-      vol = lrint(v * 15);//11.06
-		} else if (mCurSndDevice == SND_DEVICE_FM_HEADSET || mCurSndDevice == SND_DEVICE_FM_SPEAKER) {
-      vol = lrint(v * 20);//14
-		}
-	else {
-        vol = lrint(v * 13.0); //7
+        vol = lrint(v * 21.00);
+    } else if (mCurSndDevice == SND_DEVICE_HEADSET) {
+        vol = lrint(v * 14.00);
+    } else if (mCurSndDevice == SND_DEVICE_FM_HEADSET || mCurSndDevice == SND_DEVICE_FM_SPEAKER) {
+        vol = lrint(v * 14.00);
+    } else if (mCurSndDevice == SND_DEVICE_BT_A2DP || mCurSndDevice == SND_DEVICE_BT_A2DP_HEADPHONES || mCurSndDevice == SND_DEVICE_BT_A2DP_SPEAKER) {
+        vol = lrint(v * 28.00);
+    } else {
+        vol = lrint(v * 8.0);
     }
+    
     //LOGI("setVoiceVolume(%f)\n", v);
     //LOGI("Setting in-call volume to %d (available range is 0 to 7)\n", vol);
 
@@ -1219,20 +1202,19 @@ status_t AudioHardware::setVoiceVolume(float v)
 status_t AudioHardware::setMasterVolume(float v)
 {
     Mutex::Autolock lock(mLock);
-    int vol = ceil(v * 25.0);//5
+    int vol = ceil(v * 7.0);
     LOGI("Set master volume to %d.\n", vol);
     set_volume_rpc(SND_DEVICE_FM_HEADSET, SND_METHOD_VOICE, lrint(vol * 2), m7xsnddriverfd);
     set_volume_rpc(SND_DEVICE_FM_SPEAKER, SND_METHOD_VOICE, lrint(vol * 2), m7xsnddriverfd);
-    set_volume_rpc(SND_DEVICE_HANDSET, SND_METHOD_VOICE, lrint(vol * 0.78), m7xsnddriverfd);
+    set_volume_rpc(SND_DEVICE_HANDSET, SND_METHOD_VOICE, lrint(vol), m7xsnddriverfd);
     set_volume_rpc(SND_DEVICE_SPEAKER, SND_METHOD_VOICE, lrint(vol * 3), m7xsnddriverfd);
-	set_volume_rpc(SND_DEVICE_SPEAKER_IN_CALL, SND_METHOD_VOICE, vol, m7xsnddriverfd);
-	set_volume_rpc(SND_DEVICE_SPEAKER_RING, SND_METHOD_VOICE, lrint(vol * 3), m7xsnddriverfd);
-    set_volume_rpc(SND_DEVICE_BT,      SND_METHOD_VOICE, vol, m7xsnddriverfd);
-    set_volume_rpc(SND_DEVICE_BT_VR,   SND_METHOD_VOICE, vol, m7xsnddriverfd);
-	set_volume_rpc(SND_DEVICE_BT_A2DP,      SND_METHOD_VOICE, vol, m7xsnddriverfd);
-	set_volume_rpc(SND_DEVICE_BT_A2DP_HEADPHONES,      SND_METHOD_VOICE, vol, m7xsnddriverfd);
-	set_volume_rpc(SND_DEVICE_BT_A2DP_SPEAKER,      SND_METHOD_VOICE, vol, m7xsnddriverfd);
-	set_volume_rpc(SND_DEVICE_HEADSET, SND_METHOD_VOICE, lrint(vol * 1.58), m7xsnddriverfd);
+    set_volume_rpc(SND_DEVICE_SPEAKER_IN_CALL, SND_METHOD_VOICE, vol, m7xsnddriverfd);
+    set_volume_rpc(SND_DEVICE_SPEAKER_RING, SND_METHOD_VOICE, lrint(vol * 3), m7xsnddriverfd);
+    set_volume_rpc(SND_DEVICE_BT, SND_METHOD_VOICE, vol, m7xsnddriverfd);
+    set_volume_rpc(SND_DEVICE_BT_A2DP, SND_METHOD_VOICE, vol, m7xsnddriverfd);
+    set_volume_rpc(SND_DEVICE_BT_A2DP_HEADPHONES, SND_METHOD_VOICE, vol, m7xsnddriverfd);
+    set_volume_rpc(SND_DEVICE_BT_A2DP_SPEAKER, SND_METHOD_VOICE, vol, m7xsnddriverfd);
+    set_volume_rpc(SND_DEVICE_HEADSET, SND_METHOD_VOICE, lrint(vol * 2), m7xsnddriverfd);
     set_volume_rpc(SND_DEVICE_HEADSET_STEREO, SND_METHOD_VOICE, lrint(vol * 3), m7xsnddriverfd);
     set_volume_rpc(SND_DEVICE_IN_S_SADC_OUT_HANDSET, SND_METHOD_VOICE, vol, m7xsnddriverfd);
     set_volume_rpc(SND_DEVICE_IN_S_SADC_OUT_SPEAKER_PHONE, SND_METHOD_VOICE, vol, m7xsnddriverfd);
@@ -1245,7 +1227,7 @@ status_t AudioHardware::setMasterVolume(float v)
 #ifdef HAVE_FM_RADIO
 status_t AudioHardware::setFmVolume(float v)
 {
-    float ratio = 5;
+    float ratio = 2.5;
     int volume = (unsigned int)(AudioSystem::logToLinear(v) * ratio);
     
      //TODO: так доллжно быть по идее в оригинале судя по ядру, но рабтает и так как ниже
@@ -1323,24 +1305,31 @@ static status_t do_route_audio_rpc(uint32_t device,
 // always call with mutex held
 status_t AudioHardware::doAudioRouteOrMute(uint32_t device)
 {
-
+#if 0
     if (device == (uint32_t)SND_DEVICE_BT || device == (uint32_t)SND_DEVICE_CARKIT) {
         if (mBluetoothId) {
             device = mBluetoothId;
         } else if (!mBluetoothNrec) {
-            device = SND_DEVICE_BT;
+            device = SND_DEVICE_BT_EC_OFF;
         }
     }
-	if (device == (uint32_t)SND_DEVICE_BT_A2DP || device == (uint32_t)SND_DEVICE_BT_A2DP_HEADPHONES || device == (uint32_t)SND_DEVICE_BT_A2DP_SPEAKER) {
-        if (mBluetoothId) {
-            device = mBluetoothId;
-        } else if (!mBluetoothNrec) {
-            device = SND_DEVICE_BT_A2DP;
-        }
+#endif
+    /* QCOM caveat: Audio will be routed to speaker if device=handset and mute=true */
+    /* Also, the audio circuit causes battery drain unless mute=true */
+    /* Android < 2.0 uses MODE_IN_CALL for routing audio to earpiece */
+    /* Android >= 2.0 advises to use STREAM_VOICE_CALL streams and setSpeakerphoneOn() */
+    /* Android >= 2.3 uses MODE_IN_COMMUNICATION for SIP calls */
+    bool mute = !isInCall();
+    if(mute && (device == SND_DEVICE_HANDSET)) {
+        /* workaround to emulate Android >= 2.0 behaviour */
+        /* enable routing to earpiece (unmute) if mic is selected as input */
+        mute = !mBuiltinMicSelected;
     }
-    LOGV("doAudioRouteOrMute() device %x, mMode %d, mMicMute %d", device, mMode, mMicMute);
-    return do_route_audio_rpc(device,
-                              mMode != AudioSystem::MODE_IN_CALL, mMicMute, m7xsnddriverfd);
+
+    LOGD("doAudioRouteOrMute() device %x, mMode %d, mMicMute %d, mBuiltinMicSelected %d, %s",
+        device, mMode, mMicMute, mBuiltinMicSelected, mute ? "muted" : "audio circuit active");
+    return do_route_audio_rpc(device, mute, mMicMute, m7xsnddriverfd);
+
 }
 
 status_t AudioHardware::doRouting(AudioStreamInMSM72xx *input)
@@ -1359,6 +1348,7 @@ status_t AudioHardware::doRouting(AudioStreamInMSM72xx *input)
     if (input != NULL) {
         uint32_t inputDevice = input->devices();
         LOGI("do input routing device %x\n", inputDevice);
+	mBuiltinMicSelected = (inputDevice == AudioSystem::DEVICE_IN_BUILTIN_MIC);
         // ignore routing device information when we start a recording in voice
         // call
         // Recording will happen through currently active tx device

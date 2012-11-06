@@ -57,6 +57,10 @@ $(call inherit-product, build/target/product/full.mk)
 
 PRODUCT_PACKAGES += \
     gps.swift \
+    copybit.gt540 \
+    gralloc.gt540 \
+    lights.gt540 \
+    libril \
     hwaddrs \
     libOmxCore \
     libcamera \

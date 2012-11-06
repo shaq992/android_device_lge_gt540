@@ -1,5 +1,5 @@
 #
-# system.prop for swift
+# system.prop for GT540
 #
 
 rild.libpath=/system/lib/libril-qc-1.so

@@ -1,4 +1,4 @@
-ifeq ($(TARGET_BOOTLOADER_BOARD_NAME), gt540)
+ifeq ($(TARGET_BOOTLOADER_BOARD_NAME), swift)
 
 
 LOCAL_PATH:= $(call my-dir)
@@ -19,10 +19,6 @@ endif
 
 ifneq ($(TARGET_SIMULATOR),true)
 LOCAL_SHARED_LIBRARIES += libdl
-endif
-
-ifeq ($(BOARD_HAVE_FM_RADIO),true)
-LOCAL_CFLAGS += -DHAVE_FM_RADIO
 endif
 
 LOCAL_SRC_FILES += AudioHardware.cpp
